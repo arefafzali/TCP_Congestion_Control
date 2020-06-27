@@ -59,6 +59,8 @@ def plot_output(x, y, l, var):
 
 def count_drop_pkt():
 	num_drop = [0, 0]
+	y_num_drop = [[], []]
+	x_num_drop = [[], []]
 	f = open("trace.tr", "r")
 	lines = f.readlines()
 	for l in lines:
@@ -66,12 +68,18 @@ def count_drop_pkt():
 		if l[0] == "d":
 			if l[7] == "1":
 				num_drop[0] += 1
+				t = float(l[1])
+				x_num_drop[0].append(t)
+				y_num_drop[0].append(num_drop[0]/t)
 			elif l[7] == "2":
 				num_drop[1] += 1
+				t = float(l[1])
+				x_num_drop[1].append(t)
+				y_num_drop[1].append(num_drop[1]/t)
 			else :
 				print("l[7]={}, Number of Flows is greater than 2".format(l[7]))
 				sys.exit(1)
-	return num_drop
+	return num_drop, x_num_drop, y_num_drop
 
 if __name__ == "__main__":
 	pool = mp.Pool(processes=10)
@@ -94,7 +102,8 @@ if __name__ == "__main__":
 	print("TCP Vegas:")
 	subprocess.run(["ns", sys.argv[3]])
 	data3 = pool.map(process_trace_var, ["cwnd_", "ack_", "rtt_"])
-	num_drop = count_drop_pkt()
+	num_drop, x_num_drop, y_num_drop = count_drop_pkt()	
+	plot_output(x_num_drop, y_num_drop, "DROP_RATE", "drop_rate")
 	print("Num Drops For TCP_1 = {}".format(num_drop[0]))
 	print("Num Drops For TCP_2 = {}\n".format(num_drop[1]))
 	
