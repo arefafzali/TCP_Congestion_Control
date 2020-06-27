@@ -88,14 +88,16 @@ if __name__ == "__main__":
 	print("TCP New-Reno:")
 	subprocess.run(["ns", sys.argv[1]])
 	data1 = pool.map(process_trace_var, ["cwnd_", "ack_", "rtt_"])
-	num_drop = count_drop_pkt()
+	num_drop, x_num_drop, y_num_drop = count_drop_pkt()	
+	plot_output(x_num_drop, y_num_drop, "DROP_RATE_NEW_RENO", "drop_rate")
 	print("Num Drops For TCP_1 = {}".format(num_drop[0]))
 	print("Num Drops For TCP_2 = {}\n".format(num_drop[1]))
 
 	print("TCP Tahoe:")
 	subprocess.run(["ns", sys.argv[2]])
 	data2 = pool.map(process_trace_var, ["cwnd_", "ack_", "rtt_"])
-	num_drop = count_drop_pkt()
+	num_drop, x_num_drop, y_num_drop = count_drop_pkt()	
+	plot_output(x_num_drop, y_num_drop, "DROP_RATE_Tahoe", "drop_rate")
 	print("Num Drops For TCP_1 = {}".format(num_drop[0]))
 	print("Num Drops For TCP_2 = {}\n".format(num_drop[1]))
 
@@ -103,7 +105,7 @@ if __name__ == "__main__":
 	subprocess.run(["ns", sys.argv[3]])
 	data3 = pool.map(process_trace_var, ["cwnd_", "ack_", "rtt_"])
 	num_drop, x_num_drop, y_num_drop = count_drop_pkt()	
-	plot_output(x_num_drop, y_num_drop, "DROP_RATE", "drop_rate")
+	plot_output(x_num_drop, y_num_drop, "DROP_RATE_Vegas", "drop_rate")
 	print("Num Drops For TCP_1 = {}".format(num_drop[0]))
 	print("Num Drops For TCP_2 = {}\n".format(num_drop[1]))
 	
